@@ -31,10 +31,20 @@
           crearMedicos
         );
 
-        router.put("/:id", 
-        [], 
-        actualizarMedicos);
+        router.put(
+          "/:id",
+          [
+            validarToken,
+            check("nombre", "El nombre del hospital es necesario").not().isEmpty(),
+            check("hospital", "El id del hospital es necesario").isMongoId(),
+            validarCampos,
+          ],
+          actualizarMedicos
+        );
 
-        router.delete("/:id", borrarMedicos);
+        router.delete("/:id", 
+        validarToken,
+        borrarMedicos
+        );
 
         module.exports = router;

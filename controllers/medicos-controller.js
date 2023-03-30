@@ -1,5 +1,6 @@
       // Funciones exportadas
       const { response } = require("express");
+const hospital = require("../models/hospital");
 
       const Medico = require('../models/medicos');
 
@@ -44,18 +45,78 @@
 
 
 
-      const actualizarMedicos = (req, res = response) => {
-        res.json({
-          ok: false,
-          msg: "actualizarMedicos",
-        });
-      };
+      const actualizarMedicos = async (req, res = response) => {
+       
+        const id = req.params.id;
+        const uid = req.params.id;
 
-      const borrarMedicos = (req, res = response) => {
-        res.json({
-          ok: true,
-          msg: "borrarMedicos",
-        });
+        try {
+
+          const medico = await Medico.findById(id);
+
+          if(!medico){
+            return res.status(400).json({
+              ok: false,
+              msg: " Medico no encontrado por id",
+            });
+          }
+
+           const cambiosMedico = {
+             ...req.body,
+             usuario: uid,
+             
+           };
+
+           const medicoActualizado = await Medico.findByIdAndUpdate(id, cambiosMedico, {new: true})
+
+
+           res.json({
+             ok: false,
+             medico: medicoActualizado
+           });
+
+          
+        } catch (error) {
+          console.log(error)
+          res.status(500).json({
+            ok: false,
+            msg: 'Hable con el administradror'
+          })
+          
+        }
+      };
+      
+      const borrarMedicos = async (req, res = response) => {
+
+        const id = req.params.id;
+
+        try {
+          const medico = await Medico.findById(id);
+
+          if(!medico){
+            return res.status(400).json({
+              ok: false,
+              msg: "Medico no encontrado por id",
+            });
+          }
+          await Medico.findByIdAndDelete(id);
+
+          res.json({
+            ok: true,
+            msg: 'Médico Eliminado'
+          });
+
+        } catch (error) {
+          console.log(error)
+          res.status(500).json({
+            ok: false,
+            msg: 'Hable con el administrador...'
+          })
+          
+        }
+
+
+
       };
 
 

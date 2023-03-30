@@ -35,11 +35,16 @@
 
    router.put(
      "/:id",
-     [],
-     actualizarHospital // llamamos el metodo 
+     [
+       validarToken,
+       check("nombre", "El nombre del hospital es necesario").not().isEmpty(),
+       validarCampos
+     ],
+     actualizarHospital // llamamos el metodo
    );
 
    router.delete('/:id',
+   validarToken,
     borrarHospital);
 
    module.exports = router;
